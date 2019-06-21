@@ -1,0 +1,129 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+
+
+<form class="icon" method="POST" action="">
+    <button type=submit><span class="fas fa-eye" title="View"></span></button> deleted users
+</form>
+
+
+
+<div class="row">
+
+    <div class="col-md-7">{#  список эльфов#}
+        <table class="tablesorter" id="datatable">
+            <h3>Elves</h3>
+
+            <thead>    
+                <tr>
+                    {% if current_user.character == 'master' %}
+                        <th></th>
+                    {% endif %}
+                    <th>Status</th>
+                    <th>Name</th>
+                    <th>Assigned <br> gems</th>
+                    <th>Confirmed <br> gems</th>
+                    <th>Most favorite <br> gems</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for elf in elves %}
+                <tr>
+                    {% if current_user.character == 'master' %}
+                        {% if elf.status == True %}
+                            <td>
+                                <form class="icon" method="POST" action="">
+                                    {{ form.value(value=elf.id) }}
+                                    <button onclick="return confirm('Are you sure you want to delete this user?');" title="Delete user">
+                                        <span class="fa fa-trash glyphicon icon-trash"></span>
+                                    </button>
+                                </form>
+                            </td>
+                        {% else %}
+                            <td></td>
+                        {% endif %}
+                    {% endif %}
+                    <td>
+                        {% if elf.status == False %}
+                            <span class="fa fa-times-circle"></span>
+                        {% else %}
+                            <span class="fa fa-user-check"></span>
+                        {%endif %}
+                    </td>
+                    <td><a href="/user/{{ elf.username }}">{{ elf.name }}</a></td>
+                    <td>{{ elf.elf_gems.filter_by(status='assigned').count() }}</td>
+                    <td>{{ elf.elf_gems.filter_by(status='confirmed').count() }}</td>
+                    <td>
+                        {% for gem_types in elf.preferences[-3:] %}
+                            <font>&#8900;{{ gem_types }}</font>
+                        {% endfor %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="col-md-5">{#  список гномов#}
+        <table class="tablesorter" id="datatable_two">
+            <h3>Gnomes</h3>
+
+            <thead>    
+                <tr>
+                    {% if current_user.character == 'master' %}
+                        <th></th>
+                    {% endif %}
+                    <th>Status</th>
+                    <th>Name</th>
+                    <th>Mined <br> gems</th>
+                    <th>Master <br> gnome</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for gnome in gnomes %}
+                <tr>
+                    {% if current_user.character == 'master' %}
+                        {% if gnome.character == 'master' or gnome.status == False %}
+                        <td></td>
+                        {% else %}
+                        <td>
+                            <form class="icon" method="POST" action="">
+                                {{ form.value(value=gnome.id) }}
+                                <button onclick="return confirm('Are you sure you want to delete this user?');" title="Delete user">
+                                    <span class="fa fa-trash glyphicon icon-trash"></span>
+                                </button>
+                            </form>
+                        </td>
+                        {% endif %}
+                    {% endif %}
+                    <td>
+                        {% if gnome.status == False %}
+                            <span class="fa fa-times-circle"></span>
+                        {% else %}
+                            <span class="fa fa-user-check"></span>
+                        {%endif %}
+                    </td>
+                    <td><a href="/user/{{ gnome.username }}">{{ gnome.name }}</a></td>
+                    <td>{{ gnome.gnome_gems.count() }}</td>
+                    <td>{% if gnome.character == 'master' %}
+                            <i class="fa fa-check-circle"></i>
+                        {% else %}
+                            <i class="fa fa-circle-notch"></i>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+
+
+</div>
+
+
+
+
+{% endblock %}

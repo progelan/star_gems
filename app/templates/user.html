@@ -1,0 +1,327 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+
+
+<div class="row">
+    <div class="col-md-4">
+        <table>
+            <tr>
+                <td><img src="{{ user.avatar() }}"></td>
+                <td>
+                    <p> 
+                        {{ user.name }},
+                        {% if user.status == True %}
+                            lives on the planet {# живет на планете #}
+                        {% else %}
+                            does not live on the planet{# не живет на планете #}
+                        {% endif %}
+                    </p>
+                    <p> 
+                        {% if user.character == 'elf' %}
+                            Elf
+                        {% elif user.character == 'gnome' %}
+                            Gnome
+                        {% elif user.character == 'master' %}
+                            Master Gnome
+                        {% endif %}
+                    </p>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    {% if user.status == True %}
+                        {% if user.last_seen %}
+                            <p><font>Last seen on</font></p>
+                        {% endif %}
+
+                        {% if user.registration_date %}
+                            <p><font>Date registration</font></p>
+                        {% endif %}
+
+                    {% elif user.status == False %}
+                        {% if user.deletion_date %}
+                            <p><font>Profile deleted</font></p>
+                        {% endif %}
+                    {% endif %}
+                </td>
+                <td>
+                    {% if user.status == True %}
+                        {% if user.last_seen %}
+                            <p>{{ user.last_seen.strftime('%d.%m.%Y - %H:%M') }}</p>{# был последний раз #}
+                        {% endif %}
+
+                        {% if user.registration_date %}
+                            <p>{{ user.registration_date.strftime('%d.%m.%Y') }}</p>{# зарегистрирован #}
+                        {% endif %}
+
+                    {% elif user.status == False %}
+                        {% if user.deletion_date %}
+                            <p>{{ user.deletion_date.strftime('%d.%m.%Y') }}</p>{# дата удаления #}
+                        {% endif %}
+                    {% endif %}
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="col-md-4" id="prefs_table">{#  список предпочтений эльфа#}
+        {% if user.status == True %}
+            {% if user.character == 'elf' %}
+
+            <table class="tablesorter">
+                
+                <p>Preferences</p>
+
+                <thead>
+                    <tr>
+                        {% if user == current_user %}
+                            <th></th>
+                        {% endif %}
+                        <th>Preference</th>
+                        <th>Rate</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if prefs %}
+                        {% for pref in prefs %}
+                            <tr>
+                                {% if user == current_user %}
+                                    <td>
+                                        <form class="icon" method="POST" action="">
+                                            {{ form_del.value(value=pref.id) }}
+                                            <button onclick="" title="Delete preference">
+                                                <span class="fa fa-trash glyphicon icon-trash"></span>
+                                            </button>
+                                        </form>
+                                    </td>
+                                {% endif %}
+                                <td>{{ pref.gem_type }}</td>
+                                <td>{{ pref.gem_rate|round(3) }}</td>
+                            </tr>
+                        {% endfor %}
+
+
+                    {% else %}
+                        {% if user == current_user %}
+                            <tr>
+                                <td colspan="3">no preferences</td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="2">no preferences</td>
+                            </tr>
+                        {% endif %}
+                    {% endif %}
+
+                    {% if user == current_user %}
+                        <form action="" method="POST" action="{{url_for('user', username=current_user)}}">
+                            <tr id="add_prefs">
+
+                                {{ form_add.hidden_tag() }}
+                                {{ form_edit.csrf_token }}
+                                
+                                <td><button type=submit><span class="fas fa-plus" title="Add preference"></span></button></td>
+                                <td>{{ form_add.gem_type }}</td>
+                                <td>{{ form_add.gem_rate(size=4) }}</td>
+                            </tr>
+                            <tr>
+                                <td colspan="3">
+                                    {% for error in form_add.gem_rate.errors %}
+                                        <span style="color: red;">[{{ error }}]</span>
+                                    {% endfor %}
+                                </td>
+                            </tr>
+                        </form>
+                    {% endif %}
+                </tbody>
+            </table>
+
+            {% endif %}
+        {% endif %}
+    </div>
+
+    <div class="col-md-4" id="prefs_table">{#  редактировать предпочтения эльфа#}
+        {% if user.status == True %}
+            {% if user.character == 'elf' %}
+                {% if user == current_user %}
+                    <form action="" method="post">
+                        
+                        <p>Edit preference</p>
+                        
+                        {{ form_add.hidden_tag() }}
+                        {{ form_edit.csrf_token }}
+
+                        <p>
+                            {{ form_edit.pref.label }}<br>
+                            {{ form_edit.pref(size=0) }}<br>
+                            
+                            {% for error in form_edit.pref.errors %}
+                                <span style="color: red;">[{{ error }}]</span>
+                            {% endfor %}
+                        </p>
+
+                        <p>
+                            {{ form_edit.gem_rate.label }}<br>
+                            {{ form_edit.gem_rate(size=8) }}<br>
+                            
+                            {% for error in form_edit.gem_rate.errors %}
+                                <span style="color: red;">[{{ error }}]</span>
+                            {% endfor %}
+                        </p>
+
+                        <p>
+                            {{ form_edit.submit_edit(value="Save") }}
+                        </p>
+                    </form>
+                {% endif %}
+            {% endif %}
+        {% endif %}
+        <br>
+
+    </div>
+
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        {% if user == current_user or current_user.character == 'master' %}
+            <a href="{{ url_for('edit_profile') }}">Edit profile</a>{# редактировать профиль #}
+        {% endif %}
+    </div>
+</div>
+
+<hr>
+
+
+<div class="col" id="mined_gems_table">{# список добытых камней гнома #}
+    {% if user.status == True %}
+        {% if user.character == 'gnome' %}
+
+        <table class="tablesorter">
+            
+            <h3>Mined gems</h3>
+
+            <thead>
+                <tr>
+                    <th>Type</th>
+                    <th>Amount</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% if mined_gems %}
+                {% for gem_type, amount in mined_gems.items() %}
+                    <tr>
+                        <td>
+                            {{ gem_type }}
+                        </td>
+                        <td>
+                            {{ amount }}
+                        </td>
+                    </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td colspan="2">no mined gems</td>
+                </tr>
+            {% endif %}
+            </tbody>
+        </table>
+
+        {% endif %}
+    {% endif %}
+</div>
+
+
+<div class="row">
+
+    <div class="col-md-4">{#  список назначенных драгоценностей эльфа#}
+        {% if user.status == True %}
+            {% if user.character == 'elf' %}
+
+            <table class="tablesorter">
+                
+                <h3>Assigned gems</h3>
+
+                <thead>
+                    <tr>
+                        <th>Type</th>
+                        <th>Amount</th>
+                        <th>Date of assign</th>
+                        {% if user == current_user %}
+                            <th>Confirm</th>
+                        {% endif %}
+                    </tr>
+                </thead>
+
+                <tbody>
+                {% if assigned_gems %}
+                    {% for gem in assigned_gems %}
+                        <tr>
+                            <td>{{ gem.type }}</td>
+                            <td>{{ 1 }}</td>
+                            <td>{{ gem.assigned_date.strftime('%d.%m.%Y') }}</td>
+
+                            {% if user == current_user %}
+                                <td>
+                                    <form class="icon" method="POST" action="">
+                                        {{ form_confirm.value(value=gem.id) }}
+                                        <button onclick="return confirm('Are you sure you want to confirm the transfer of the assigned gem?');" title="Confirm distributin this gem">
+                                            <span> OK </span>
+                                        </button>
+                                    </form>
+                                </td>
+                            {% endif %}
+                            
+                        </tr>
+                    {% endfor %}
+                {% else %}
+                    <td colspan="4">no assigned gems</td>
+                {% endif %}
+                </tbody>
+            </table>
+            {% endif %}
+        {% endif %}
+    </div>
+
+    <div class="col-md-4" id="confirmed_gems_table">{#  список потвержденных драгоценностей эльфа#}
+        {% if user.status == True %}
+            {% if user.character == 'elf' %}
+
+            <table class="tablesorter">
+                
+                <h3>Confirmed gems</h3>
+
+                <thead>
+                    <tr>
+                        <th>Type</th>
+                        <th>Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                {% if confirmed_gems %}
+                    {% for gem_type, amount in confirmed_gems.items() %}
+                        <tr>
+                            <td>{{ gem_type }}</td>
+                            <td>{{ amount }}</td>
+                        </tr>
+                    {% endfor %}
+                {% else %}
+                    <td colspan="2">no confirmed gems</td>
+                {% endif %}
+
+                </tbody>
+            </table>
+            
+            {% endif %}
+        {% endif %}
+    </div>
+
+
+</div>
+
+
+{% endblock %}
+

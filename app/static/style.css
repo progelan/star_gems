@@ -1,0 +1,120 @@
+@font-face {
+  font-family: starwars;
+  src: url('starwars.ttf');
+  font-weight: bold;
+}
+
+html {
+  font-family: sans-serif;
+  background: #eee;
+  padding: 1rem;
+}
+
+body {
+  max-width: 1600px;
+  margin: 0 auto;
+  background: white;
+  min-height: 1024px;
+  font-size: 15pt;
+  padding: 20px;
+}
+
+a {
+  color: #377ba8;
+  margin-right: 25px;
+}
+
+hr {
+  border: none;
+  border-top: 1px solid lightgray;
+}
+
+h2 {
+  margin-bottom: 35px;
+}
+
+label {
+  font-weight: 700;
+}
+
+td {
+  text-indent: 8px;
+  vertical-align: center;
+}
+
+h3 {
+  text-align: center;
+} 
+
+font {
+  color: #656565;
+  margin-right: 15px;
+}
+
+.login-img {
+	display: block;
+	margin: auto;
+	max-width: 300px;/*макс.ширина*/
+  margin-top: 30px;
+  opacity: 0.85;
+}
+
+.welcome-title {
+	max-width: 300px;
+	margin: auto;
+	text-align: center;
+}
+
+.form-auth {
+	display: block;
+	text-align: center;
+}
+
+#loginout {
+  float: right;
+}
+
+#navb {
+  margin-bottom: 38px;
+}
+
+#all_gems {
+  width: 1500px;
+}
+
+#mined_gems_table {
+  width: 30%;
+}
+
+#confirmed_gems_table {
+  width: 25%;
+}
+
+#prefs_table {
+  /*width: 25%;*/
+  padding-top: 20px;
+}
+
+#cover_gem {
+  color: #929292;
+  margin-right: 1px;
+}
+
+#update_user {
+  float: right;
+}
+
+#flash_block {
+  height: 50px;
+  margin-bottom: 20px;
+  margin-right: 25px;
+}
+
+#add_prefs td {
+  background-color: #eeeeee;
+}
+
+#stargems {
+  font-family: starwars; color:#44789a;
+  font-size: 40pt;
+}

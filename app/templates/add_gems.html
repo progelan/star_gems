@@ -1,0 +1,54 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+
+
+{% if current_user.character == 'gnome' %}
+	
+	<h2>Add gems</h2>
+
+
+
+    <form action="" method="post">
+
+        <h4>You can add newly mined stones</h4>
+        <br>
+
+        {{ form.hidden_tag() }}
+        
+        <p>
+            {{ form.type_gem.label }}
+            {{ form.type_gem(size=0) }}<br>
+            
+            {% for error in form.type_gem.errors %}
+                <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <p>
+            {{ form.amount_gem.label }}
+            {{ form.amount_gem(size=4) }}<br>
+
+            {% for error in form.amount_gem.errors %}
+                <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <p>
+            {{ form.submit(onclick="return confirm('Do you really want to add gems to the system?');") }}
+        </p>
+    </form>
+
+    <br>
+
+    <a href="{{ url_for('user', username=current_user.username) }}">Back to profile</a>
+
+
+{% else %}
+	<h3>Only gnomes can view this page</h3>
+{% endif %}
+
+
+
+
+
+{% endblock %}

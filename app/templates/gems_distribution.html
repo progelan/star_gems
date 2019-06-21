@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+
+{% if current_user.character == 'master' %}
+<div class="container">
+    
+    <h3>Mined and not assigned gems</h3>
+    
+    <table class="tablesorter" id="datatable">
+        <thead>    
+            <tr>
+                <th>Type</th>
+                <th>Date mined</th>
+                <th>Gnome miner</th>
+                <th>Status</th>
+                <th>Elf candidate</th>
+                <th>Hand distribution</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if gems %}
+                {% for gem in gems %}
+                    <tr>
+                        <td>{{ gem.type }}</td>
+                        <td>{{ gem.mined_date.strftime('%d.%m.%Y') }}</td>
+                        <td><a href="/user/{{ gem.gnome.username }}">{{ gem.gnome.name }}</a></td>
+                        <td>{{ gem.status }}</td>
+                        <td><a href="/user/{{ gem.elf.username }}">{{ gem.elf.name }}</a></td>
+                        <td>
+                            <form class="icon" method="POST" action="">
+                                {# {{ form.hidden_tag() }} #}
+                                {{ form.elf }}
+                                {{ form.value(value=gem.id) }}
+
+                                <button onclick="return confirm('Do you really want to assign this gem to an elf?');" title="Assign elf">
+                                    <span class="fa fa-arrow-circle-left"></span>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td colspan="6">no gems for distribution</td>
+                </tr>
+            {% endif %}
+        </tbody>
+    </table>
+    <form class="icon" method="POST" action="">
+        {{ form.submit_distrib() }} 
+
+        {{ form.submit_confirm(onclick="return confirm('You really want to finish the distribution?');") }}
+    </form>
+</div>
+
+{% else %}
+    <h3>Only Master-gnomes can view this page</h3>
+{% endif %}
+
+
+
+{% endblock %}

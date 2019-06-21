@@ -1,0 +1,94 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="row">
+    <div class="col-sm-3">
+        <form class="icon" method="POST" action="">
+            <button  name="view_all_gems" type=submit><span class="fas fa-eye" title="View all gems"></span></button> deleted gems
+        </form><br>
+    </div>
+</div>
+
+<div class="container" id="all_gems">
+
+    <h3>All gems </h3>
+
+    <table class="tablesorter" id="datatable">
+        <thead>
+            <tr>
+                {% if current_user.character == 'master' %}
+                    <th></th>
+                {% endif %}
+                <th>Type</th>
+                <th>Status</th>
+                <th>Date mined</th>
+                <th>Gnome miner</th>
+                <th>Date of assignment</th>
+                <th>Assignation type</th>
+                <th>Confirmation date</th>
+                <th>Master Gnome</th>
+                <th>Elf owner</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for gem in gems %}
+                <tr>
+                    {% if current_user.character == 'master' %}
+                        {% if gem.status != 'deleted' %}
+                            <td>
+                                <form class="icon" method="POST" action="">
+                                    {{ form.value(value=gem.id) }}
+                                    <button onclick="return confirm('Are you sure you want to delete this gem?');" title="Delete gem">
+                                        <span class="fa fa-trash glyphicon icon-trash"></span>
+                                    </button>
+                                </form>
+                            </td>
+                        {% else %}
+                            <td></td>
+                        {% endif %}
+                    {% endif %}
+                    
+                    <td>{{ gem.type }}</td>
+
+                    <td>{{ gem.status }}</td>
+
+                    <td>{{ gem.mined_date.strftime('%d.%m.%Y') }}</td>
+                    <td><a href="/user/{{ gem.gnome.username }}">{{ gem.gnome.name }}</a></td>
+
+                    {% if gem.assigned_date %}
+                        <td>{{ gem.assigned_date.strftime('%d.%m.%Y') }}</td>
+                    {% else %}
+                        <td>{# not assigned #}</td>
+                    {% endif %}
+
+                    {% if gem.assignation_type %}
+                        <td>{{ gem.assignation_type }}
+                    {% else %}
+                        <td>{# not assigned #}</td>
+                    {% endif %}
+
+                    {% if gem.confirmation_date %}
+                        <td>{{ gem.confirmation_date.strftime('%d.%m.%Y') }}</td>
+                    {% else %}
+                        <td>{# not confirmed #}</td>
+                    {% endif %}
+                    
+                    <td><a href="/user/{{ gem.master.username }}">{{ gem.master.name }}</a></td>
+
+                    {% if gem.status == 'confirmed' %}
+                        <td><a href="/user/{{ gem.elf.username }}">{{ gem.elf.name }}</a></td>
+                    {% elif gem.status == 'assigned' %}
+                        <td><a href="/user/{{ gem.elf.username }}" id="cover_gem">assigned to {{ gem.elf.name }}</a></td>
+                    {% else %}
+                        <td></td>
+                    {% endif %}
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+
+{% endblock %}

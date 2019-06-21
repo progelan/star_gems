@@ -1,0 +1,75 @@
+
+{%- extends "bootstrap/base.html" %}
+
+{% block styles -%}
+    {{ super() }}  {# do not forget to call super or Bootstrap's own stylesheets will disappear! #}
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='datatables/table_style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='datatables/datatables.css') }}">
+    {{ fontawesome_html() }}
+{% endblock %}
+
+
+{% block title %}
+    {% if title %}
+        {{ title }}
+    {% else %}
+        Welcome
+    {% endif %}
+{% endblock %}
+
+
+{% block navbar %}
+
+    <div id="navb">
+        {% if current_user.is_anonymous == False %}
+            <a href="{{ url_for('user', username=current_user.username) }}">My profile</a>
+        {% endif %}
+        <a href="{{ url_for('users') }}">Users</a>
+        <a href="{{ url_for('add_gems') }}">Add gems</a>
+        <a href="{{ url_for('gems') }}">Gems</a>
+        <a href="{{ url_for('gems_distribution') }}">Distribution</a>
+        <a href="{{ url_for('settings') }}">Settings</a>
+
+        <a class="navbar-brand" href="{{ url_for('gems') }}" id="stargems">STAR<br><br>GEMS</a>
+
+        {% if current_user.is_anonymous %}
+            <a href="{{ url_for('login') }}"id="loginout">&#128274; Login</a>
+            <a href="{{ url_for('register') }}" id="loginout">&#128466; Register</a>
+        {% else %}
+            <a href="{{ url_for('logout') }}" id="loginout">Logout &#128682;</a>
+        {% endif %}{# «login» автоматически переключиться на «logout» после входа пользователя в систему #}
+
+
+        <hr>
+    </div>
+
+    <div class="row" id="flash_block">
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <ul>
+                    {% for message in messages %}
+                        <div class="alert alert-success" role="alert">{{ message }} <a href="javascript:void(0)" class="close" data-dismiss="alert">x</a></div>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
+    </div>
+
+
+{% endblock %}
+
+
+{% block scripts %}
+    {{ super() }}
+    <script type="text/javascript" src="{{ url_for('static', filename='update_user.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='datatables/datatables.js') }}"></script>
+    <script>
+        $(document).ready( function () {
+            $('#datatable').DataTable();
+        } );
+        $(document).ready( function () {
+            $('#datatable_two').DataTable();
+        } );
+    </script>
+{% endblock %}

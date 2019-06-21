@@ -1,0 +1,146 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+
+{% if current_user.character == 'master' %}
+    
+<div class="row">
+
+
+    <div class="col-md-5">
+
+        <h3>Edit requirements</h3>
+
+        <table class="tablesorter">{# таблица требований коэффицентов соответствия #}
+            <thead>
+                <tr>
+                    <th>Type</th>
+                    <th>Rate</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for req in reqs %}
+                    <tr>
+                        <td>{{ req.req_type }}</td>
+                        <td>{{ req.req_rate|round(3) }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <h3 style="color: green">Attention! Currently only "Fair distribution" works</h3>
+
+        <br>
+
+        <form action="" method="POST">
+            {{ form_edit.csrf_token }}
+            {{ form_edit.hidden_tag() }}
+
+            <p>
+                {{ form_edit.req_type(size=0) }}<br>
+                
+                {% for error in form_edit.req_type.errors %}
+                    <span style="color: red;">[{{ error }}]</span>
+                {% endfor %}
+            </p>
+
+            <p>
+                {{ form_edit.req_rate.label }}
+                {{ form_edit.req_rate(size=8) }} {{ form_edit.submit_edit() }}<br>
+                
+                {% for error in form_edit.req_rate.errors %}
+                    <span style="color: red;">[{{ error }}]</span>
+                {% endfor %}
+            </p>
+        </form>
+
+        <br>
+
+        <a href="{{ url_for('user', username=current_user.username) }}">Back to profile</a>
+    </div>
+
+    <div class="col-md-1"></div>
+
+    <div class="col-md-5">
+        
+        <h3>Edit gem types</h3>
+
+        <table class="tablesorter" id="prefs_table">{# таблица существующих драгоценностей #}
+            <thead>
+                <tr>
+                    <th>Type gem</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for gem_type in gem_types %}
+                    <tr>
+                        <td>
+                            {{ form_del.value(value=gem_type.type) }}{# поле только для сортировки #}
+                            <form class="icon" method="POST" action="">
+                                {{ form_del.value(value=gem_type.id) }}
+                                <button onclick="return confirm('Are you sure you want to delete this gem type?');" title="Delete type">
+                                    <span class="fa fa-trash glyphicon icon-trash"></span>
+                                </button>
+                                {{ gem_type.type }}
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+                <form action="" method="POST">
+                    {{ form_add.hidden_tag() }}
+                    {{ form_add.csrf_token }}
+                      
+                    <tr>
+                        <td>
+                            <button type=submit><span class="fas fa-plus" title="Add type"></span></button>
+                            {{ form_add.gem_type }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            {% for error in form_add.gem_type.errors %}
+                                <span style="color: red;">[{{ error }}]</span>
+                            {% endfor %}
+                        </td>
+                    </tr>
+                </form>
+            </tbody>
+        </table>
+
+        <br>
+
+        <form action="" method="POST">
+            {{ form_gem.hidden_tag() }}
+            {{ form_gem.csrf_token }}
+            <p>
+                {{ form_gem.gem_type }}<br>
+                {% for error in form_gem.gem_type.errors %}
+                    <span style="color: red;">[{{ error }}]</span>
+                {% endfor %}
+            </p>
+            <p>
+                {{ form_gem.edit_type.label }} 
+                {{ form_gem.edit_type }}  {{ form_gem.submit_type() }}<br>
+
+                {% for error in form_gem.edit_type.errors %}
+                    <span style="color: red;">[{{ error }}]</span>
+                {% endfor %}
+            </p>
+        </form>
+    </div>
+
+
+
+</div>
+
+
+{% else %}
+    <h3>Only Master-gnomes can view this page</h3>
+{% endif %}
+
+
+
+
+
+{% endblock %}

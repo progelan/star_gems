@@ -1,0 +1,36 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+
+	<div><img class="login-img" src="../static/logo.png"></div>
+
+	<div class="welcome-title"><h2>Welcome!</h2><br/></div>
+	
+	<div class="form-auth">
+		<form action="" method="post" novalidate=""><!-- novalidate указ браузеру не проверять форму -->
+			{{ form.hidden_tag() }}
+			<p>
+				{{ form.username.label }}<br>
+				{{ form.username(size=32, id='user_field') }}<br>
+
+				{% for error in form.username.errors %}
+				<span style="color: red;">[{{ error }}]</span>
+				{% endfor %}
+			</p>
+			<p>
+				{{ form.password.label }}<br>
+				{{ form.password(size=32, id='pass_field') }}<br>
+
+				{% for error in form.password.errors %}
+				<span style="color: red;">[{{ error }}]</span>
+				{% endfor %}
+			</p>
+			<p>{{ form.remember_me() }} {{ form.remember_me.label }}</p>
+			<p>{{ form.submit() }}</p>
+		</form>
+	</div>
+
+	<button type="button" onclick="update_user()" id="update_user">Update user</button>
+	
+{% endblock %}

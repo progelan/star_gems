@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1 class="welcome-title">Register</h1>
+
+<div><img class="login-img" src="../static/disc.png"></div>
+
+<div class="form-auth">
+    <form action="" method="post">
+        {{ form.hidden_tag() }}
+        <p>
+            {{ form.username.label }}<br>
+            {{ form.username(size=32) }}<br>
+
+            {% for error in form.username.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <p>
+            {{ form.character.label }}<br>
+            {{ form.character(size=0) }}<br>
+
+            {% for error in form.character.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <p>
+            {{ form.email.label }}<br>
+            {{ form.email(size=32) }}<br>
+
+            {% for error in form.email.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <p>
+            {{ form.password.label }}<br>
+            {{ form.password(size=32) }}<br>
+
+            {% for error in form.password.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <p>
+            {{ form.confirmpass.label }}<br>
+            {{ form.confirmpass(size=32) }}<br>
+
+            {% for error in form.confirmpass.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <p>
+            {{ form.submit() }}
+        </p>
+    </form>
+</div>
+{% endblock %}
