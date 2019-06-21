@@ -63,7 +63,7 @@
 {% block scripts %}
     {{ super() }}
     <script type="text/javascript" src="{{ url_for('static', filename='update_user.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='datatables/datatables.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='datatables/datatables.min.js') }}"></script>
     <script>
         $(document).ready( function () {
             $('#datatable').DataTable();
